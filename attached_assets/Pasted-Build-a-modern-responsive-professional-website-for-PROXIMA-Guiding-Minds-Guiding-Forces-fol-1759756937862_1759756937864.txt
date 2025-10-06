@@ -1,0 +1,104 @@
+Build a modern, responsive, professional website for 🌟 PROXIMA – Guiding Minds, Guiding Forces, following the structure and content below. Use React + TailwindCSS for styling, with smooth animations, soft shadows, rounded corners, and grid-based layouts. The design should look elegant, minimal, and trustworthy for an educational & counselling platform.
+
+Requirements:
+Header Menu
+
+Logo/brand name: PROXIMA – Guiding Minds, Guiding Forces
+
+Navigation links: Home | Why PROXIMA | About Ashu Manchanda | Services | Workshops & Seminars | Resources & Blog | Media Gallery | Testimonials | Contact Us
+
+Sticky navbar with hover effects.
+
+Primary CTAs on header: 👉 Book a Consultation | Explore Our Services
+
+Hero Section
+
+Large headline: "Bridging Potential with Purpose. Empowering Your Journey Forward."
+
+Subtext: Short description of PROXIMA’s mission.
+
+Call-to-action button: [Book Your Free Consultation]
+
+Background: soft gradient or inspiring abstract design.
+
+About Ashu Manchanda Section
+
+Image of Ashu (use placeholder first).
+
+Description of her background (22+ years of teaching, counselling, cyber security expertise).
+
+Highlight her mission, empathetic + action-oriented + future-ready approach.
+
+Why PROXIMA Section
+
+Grid cards highlighting:
+
+22+ Years of Expertise
+
+Integrated Approach
+
+Leading Tools (Mentoria, etc.)
+
+Certified & Credentialed
+
+Nationwide Impact
+
+Comprehensive Support
+
+Services Section
+
+Split into 3 categories with icons:
+
+Counselling Services (Adolescent, Relationship, Personal growth)
+
+Educational & Career Guidance (Career planning, Admission guidance, Special education support)
+
+Workshops & Seminars (Cyber hygiene, Emotional intelligence, Career awareness, Classroom management, Faculty development, Prompt engineering, Critical thinking).
+
+Testimonials Section
+
+Slider or cards with client feedback.
+
+Blog & Resources Section
+
+Grid layout with featured articles:
+
+“Navigating the Digital World: A Cyber Hygiene Guide for Families”
+
+“The Parent’s Role in Adolescent Mental Health”
+
+“Unlocking Potential: Strategies for Supporting Students with Special Needs”
+
+“Choosing Your Career Path: A Guide for Modern Students”
+
+Button: [Read More Articles]
+
+Contact Us Section
+
+Call: +91 9650660584
+
+Email: proximagmgf@gmail.com
+
+Website: proximagmgf.com
+
+Social media icons (LinkedIn, Instagram, X/Twitter, Facebook).
+
+Button: [Book a Free Consultation]
+
+Footer
+
+Text: “PROXIMA © 2025 | All Rights Reserved”
+
+Links: Privacy Policy | Terms of Service
+
+Technical Notes:
+
+Use Tailwind for styling (responsive, mobile-first).
+
+Add Framer Motion for smooth section fade-ins and CTA hover animations.
+
+Use a professional color palette: soft blues, purples, and white with accent highlights.
+
+All buttons should be consistent, rounded-xl with subtle shadows.
+
+Blog/articles should be structured for easy future expansion.
