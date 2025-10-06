@@ -41,7 +41,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid service type" });
       }
 
-      const booking = await storage.createBooking(validatedData);
+      const bookingData = {
+        ...validatedData,
+        amount: amount,
+      };
+      const booking = await storage.createBooking(bookingData);
 
       const order = await razorpay.orders.create({
         amount: amount * 100,
@@ -65,7 +69,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         orderId: order.id,
-        amount: order.amount,
+        amount: order.amount, // paise for Razorpay
+        amountInRupees: amount, // rupees for display
         currency: order.currency,
         bookingId: booking.id,
         paymentId: payment.id,
@@ -78,7 +83,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/payments/verify", async (req, res) => {
     try {
-      const { razorpayOrderId, razorpayPaymentId, razorpaySignature, bookingId } = req.body;
+      const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
 
       const generatedSignature = crypto
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "")
@@ -94,13 +99,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Payment not found" });
       }
 
+      if (!payment.bookingId) {
+        return res.status(400).json({ error: "No booking associated with payment" });
+      }
+
       await storage.updatePayment(payment.id, {
         razorpayPaymentId,
         razorpaySignature,
         status: "success",
       });
 
-      await storage.updateBooking(bookingId, {
+      await storage.updateBooking(payment.bookingId, {
         paymentId: razorpayPaymentId,
         status: "confirmed",
       });

@@ -52,13 +52,15 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
 
   const createOrderMutation = useMutation({
     mutationFn: async (data: BookingFormData) => {
-      return await apiRequest("POST", "/api/payments/create-order", data);
+      const res = await apiRequest("POST", "/api/payments/create-order", data);
+      return await res.json();
     },
   });
 
   const verifyPaymentMutation = useMutation({
     mutationFn: async (paymentData: any) => {
-      return await apiRequest("POST", "/api/payments/verify", paymentData);
+      const res = await apiRequest("POST", "/api/payments/verify", paymentData);
+      return await res.json();
     },
   });
 
@@ -70,7 +72,7 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
-        amount: orderData.amount,
+        amount: orderData.amount, // amount in paise from backend
         currency: "INR",
         name: "PROXIMA",
         description: serviceName,
@@ -81,7 +83,6 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
-              bookingId: orderData.bookingId,
             });
 
             toast({
@@ -91,12 +92,17 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
 
             form.reset();
             onClose();
-          } catch (error) {
+          } catch (error: any) {
             toast({
               variant: "destructive",
               title: "Payment Verification Failed",
-              description: "Please contact us for assistance.",
+              description: error.message || "Please contact us for assistance.",
             });
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            setIsProcessing(false);
           }
         },
         prefill: {

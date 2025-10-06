@@ -175,8 +175,13 @@ export class MemStorage implements IStorage {
   async createConsultation(insertConsultation: InsertConsultation): Promise<Consultation> {
     const id = randomUUID();
     const consultation: Consultation = {
-      ...insertConsultation,
       id,
+      name: insertConsultation.name,
+      email: insertConsultation.email,
+      phone: insertConsultation.phone,
+      serviceType: insertConsultation.serviceType,
+      message: insertConsultation.message || null,
+      preferredDate: insertConsultation.preferredDate || null,
       status: "pending",
       createdAt: new Date(),
     };
@@ -196,11 +201,16 @@ export class MemStorage implements IStorage {
   async createBooking(insertBooking: InsertBooking): Promise<Booking> {
     const id = randomUUID();
     const booking: Booking = {
-      ...insertBooking,
       id,
-      status: "pending",
+      consultationId: insertBooking.consultationId || null,
+      name: insertBooking.name,
+      email: insertBooking.email,
+      phone: insertBooking.phone,
+      serviceType: insertBooking.serviceType,
+      amount: insertBooking.amount,
       paymentId: null,
       orderId: null,
+      status: "pending",
       createdAt: new Date(),
     };
     this.bookings.set(id, booking);
@@ -227,8 +237,14 @@ export class MemStorage implements IStorage {
   async createPayment(insertPayment: InsertPayment): Promise<Payment> {
     const id = randomUUID();
     const payment: Payment = {
-      ...insertPayment,
       id,
+      bookingId: insertPayment.bookingId || null,
+      razorpayOrderId: insertPayment.razorpayOrderId,
+      razorpayPaymentId: insertPayment.razorpayPaymentId || null,
+      razorpaySignature: insertPayment.razorpaySignature || null,
+      amount: insertPayment.amount,
+      currency: insertPayment.currency || "INR",
+      status: insertPayment.status || "created",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -262,8 +278,13 @@ export class MemStorage implements IStorage {
   async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
     const id = randomUUID();
     const testimonial: Testimonial = {
-      ...insertTestimonial,
       id,
+      name: insertTestimonial.name,
+      role: insertTestimonial.role,
+      content: insertTestimonial.content,
+      rating: insertTestimonial.rating || 5,
+      imageUrl: insertTestimonial.imageUrl || null,
+      isPublished: insertTestimonial.isPublished ?? true,
       createdAt: new Date(),
     };
     this.testimonials.set(id, testimonial);
@@ -282,8 +303,15 @@ export class MemStorage implements IStorage {
   async createBlogArticle(insertArticle: InsertBlogArticle): Promise<BlogArticle> {
     const id = randomUUID();
     const article: BlogArticle = {
-      ...insertArticle,
       id,
+      title: insertArticle.title,
+      slug: insertArticle.slug,
+      excerpt: insertArticle.excerpt,
+      content: insertArticle.content,
+      category: insertArticle.category,
+      imageUrl: insertArticle.imageUrl || null,
+      author: insertArticle.author || "Ashu Manchanda",
+      isPublished: insertArticle.isPublished ?? true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
