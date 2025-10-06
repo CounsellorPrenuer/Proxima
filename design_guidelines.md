@@ -12,15 +12,17 @@
 ## Color Palette
 
 **Primary Colors**:
-- Deep Trustworthy Blue: 220 70% 45% (primary brand, headers, CTAs)
-- Soft Purple: 270 50% 60% (secondary accent, highlights)
+- Medium Blue: 222 45% 50% (#4567B7) - primary brand, headers, CTAs
+- Sky Blue: 197 71% 73% (#87CEEB) - accent, highlights, interactive elements
 - Pure White: 0 0% 100% (backgrounds, cards)
 
 **Supporting Colors**:
-- Light Sky Blue: 210 40% 92% (section backgrounds, subtle highlights)
-- Muted Purple Grey: 260 15% 85% (borders, dividers)
-- Deep Navy: 220 60% 20% (text, footer)
+- Light Sky Blue: 197 40% 92% (section backgrounds, subtle highlights)
+- Soft Blue Grey: 197 20% 85% (borders, dividers)
+- Deep Navy Blue: 222 50% 25% (text, footer)
 - Success Green: 150 60% 45% (confirmation states for Razorpay)
+
+**Color Strategy**: The soft blue palette (#87CEEB, #4567B7) creates a calming, trustworthy atmosphere that's both professional and approachable - perfect for educational and counseling services.
 
 **Avoid**: Bright yellows, harsh reds, or overly saturated colors that undermine professional trust.
 

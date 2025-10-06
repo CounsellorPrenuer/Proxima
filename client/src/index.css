@@ -16,78 +16,78 @@
 
   --background: 0 0% 100%;
 
-  --foreground: 220 60% 20%;
+  --foreground: 222 50% 25%;
 
-  --border: 260 15% 85%;
+  --border: 197 20% 85%;
 
   --card: 0 0% 100%;
 
-  --card-foreground: 220 60% 20%;
+  --card-foreground: 222 50% 25%;
 
-  --card-border: 260 15% 92%;
+  --card-border: 197 20% 92%;
 
-  --sidebar: 220 40% 96%;
+  --sidebar: 197 50% 96%;
 
-  --sidebar-foreground: 220 60% 20%;
+  --sidebar-foreground: 222 50% 25%;
 
-  --sidebar-border: 220 15% 90%;
+  --sidebar-border: 197 30% 90%;
 
-  --sidebar-primary: 220 70% 45%;
+  --sidebar-primary: 222 45% 50%;
 
-  --sidebar-primary-foreground: 220 20% 98%;
+  --sidebar-primary-foreground: 0 0% 100%;
 
-  --sidebar-accent: 220 12% 88%;
+  --sidebar-accent: 197 35% 88%;
 
-  --sidebar-accent-foreground: 220 60% 20%;
+  --sidebar-accent-foreground: 222 50% 25%;
 
-  --sidebar-ring: 220 70% 45%;
+  --sidebar-ring: 222 45% 50%;
 
   --popover: 0 0% 100%;
 
-  --popover-foreground: 220 60% 20%;
+  --popover-foreground: 222 50% 25%;
 
-  --popover-border: 260 15% 88%;
+  --popover-border: 197 20% 88%;
 
-  --primary: 220 70% 45%;
+  --primary: 222 45% 50%;
 
-  --primary-foreground: 220 20% 98%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 210 40% 92%;
+  --secondary: 197 40% 92%;
 
-  --secondary-foreground: 220 60% 20%;
+  --secondary-foreground: 222 50% 25%;
 
-  --muted: 220 15% 94%;
+  --muted: 197 20% 94%;
 
-  --muted-foreground: 220 40% 45%;
+  --muted-foreground: 222 30% 50%;
 
-  --accent: 270 50% 60%;
+  --accent: 197 71% 73%;
 
-  --accent-foreground: 0 0% 100%;
+  --accent-foreground: 222 50% 25%;
 
   --destructive: 0 72% 45%;
 
   --destructive-foreground: 0 20% 98%;
 
-  --input: 220 30% 70%;
-  --ring: 220 70% 45%;
-  --chart-1: 220 70% 45%;
-  --chart-2: 270 50% 50%;
+  --input: 197 30% 70%;
+  --ring: 222 45% 50%;
+  --chart-1: 222 45% 50%;
+  --chart-2: 197 71% 73%;
   --chart-3: 150 60% 45%;
-  --chart-4: 210 60% 50%;
-  --chart-5: 240 55% 55%;
+  --chart-4: 197 60% 60%;
+  --chart-5: 210 55% 65%;
 
   --font-sans: 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Poppins', Georgia, serif;
   --font-mono: Menlo, Monaco, 'Courier New', monospace;
   --radius: .75rem;
-  --shadow-2xs: 0px 1px 2px 0px hsl(220 60% 20% / 0.05);
-  --shadow-xs: 0px 1px 3px 0px hsl(220 60% 20% / 0.08);
-  --shadow-sm: 0px 2px 4px 0px hsl(220 60% 20% / 0.06), 0px 1px 2px -1px hsl(220 60% 20% / 0.04);
-  --shadow: 0px 4px 6px -1px hsl(220 60% 20% / 0.08), 0px 2px 4px -2px hsl(220 60% 20% / 0.05);
-  --shadow-md: 0px 6px 8px -2px hsl(220 60% 20% / 0.10), 0px 4px 6px -3px hsl(220 60% 20% / 0.06);
-  --shadow-lg: 0px 10px 15px -3px hsl(220 60% 20% / 0.12), 0px 6px 10px -4px hsl(220 60% 20% / 0.08);
-  --shadow-xl: 0px 20px 25px -5px hsl(220 60% 20% / 0.14), 0px 10px 15px -6px hsl(220 60% 20% / 0.10);
-  --shadow-2xl: 0px 25px 50px -12px hsl(220 60% 20% / 0.18);
+  --shadow-2xs: 0px 1px 2px 0px hsl(222 50% 25% / 0.05);
+  --shadow-xs: 0px 1px 3px 0px hsl(222 50% 25% / 0.08);
+  --shadow-sm: 0px 2px 4px 0px hsl(222 50% 25% / 0.06), 0px 1px 2px -1px hsl(222 50% 25% / 0.04);
+  --shadow: 0px 4px 6px -1px hsl(222 50% 25% / 0.08), 0px 2px 4px -2px hsl(222 50% 25% / 0.05);
+  --shadow-md: 0px 6px 8px -2px hsl(222 50% 25% / 0.10), 0px 4px 6px -3px hsl(222 50% 25% / 0.06);
+  --shadow-lg: 0px 10px 15px -3px hsl(222 50% 25% / 0.12), 0px 6px 10px -4px hsl(222 50% 25% / 0.08);
+  --shadow-xl: 0px 20px 25px -5px hsl(222 50% 25% / 0.14), 0px 10px 15px -6px hsl(222 50% 25% / 0.10);
+  --shadow-2xl: 0px 25px 50px -12px hsl(222 50% 25% / 0.18);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -132,76 +132,76 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  --background: 220 15% 10%;
+  --background: 222 20% 10%;
 
-  --foreground: 220 10% 92%;
+  --foreground: 197 15% 92%;
 
-  --border: 220 15% 18%;
+  --border: 222 20% 18%;
 
-  --card: 220 15% 12%;
+  --card: 222 20% 12%;
 
-  --card-foreground: 220 10% 92%;
+  --card-foreground: 197 15% 92%;
 
-  --card-border: 220 15% 16%;
+  --card-border: 222 20% 16%;
 
-  --sidebar: 220 15% 14%;
+  --sidebar: 222 20% 14%;
 
-  --sidebar-foreground: 220 10% 92%;
+  --sidebar-foreground: 197 15% 92%;
 
-  --sidebar-border: 220 15% 20%;
+  --sidebar-border: 222 20% 20%;
 
-  --sidebar-primary: 220 70% 45%;
+  --sidebar-primary: 222 45% 50%;
 
-  --sidebar-primary-foreground: 220 20% 98%;
+  --sidebar-primary-foreground: 0 0% 100%;
 
-  --sidebar-accent: 220 18% 22%;
+  --sidebar-accent: 222 25% 22%;
 
-  --sidebar-accent-foreground: 220 10% 92%;
+  --sidebar-accent-foreground: 197 15% 92%;
 
-  --sidebar-ring: 220 70% 55%;
+  --sidebar-ring: 197 71% 73%;
 
-  --popover: 220 15% 16%;
+  --popover: 222 20% 16%;
 
-  --popover-foreground: 220 10% 92%;
+  --popover-foreground: 197 15% 92%;
 
-  --popover-border: 220 15% 22%;
+  --popover-border: 222 20% 22%;
 
-  --primary: 220 70% 45%;
+  --primary: 222 45% 50%;
 
-  --primary-foreground: 220 20% 98%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 18% 24%;
+  --secondary: 222 25% 24%;
 
-  --secondary-foreground: 220 10% 92%;
+  --secondary-foreground: 197 15% 92%;
 
-  --muted: 220 16% 20%;
+  --muted: 222 20% 20%;
 
-  --muted-foreground: 220 20% 70%;
+  --muted-foreground: 197 30% 70%;
 
-  --accent: 270 18% 22%;
+  --accent: 197 50% 35%;
 
-  --accent-foreground: 270 30% 88%;
+  --accent-foreground: 197 71% 90%;
 
   --destructive: 0 72% 45%;
 
   --destructive-foreground: 0 20% 98%;
 
-  --input: 220 25% 35%;
-  --ring: 220 70% 55%;
-  --chart-1: 220 70% 65%;
-  --chart-2: 270 50% 70%;
+  --input: 197 30% 35%;
+  --ring: 197 71% 73%;
+  --chart-1: 222 45% 65%;
+  --chart-2: 197 71% 73%;
   --chart-3: 150 60% 65%;
-  --chart-4: 210 60% 70%;
-  --chart-5: 240 55% 75%;
+  --chart-4: 197 60% 70%;
+  --chart-5: 210 55% 75%;
 
-  --shadow-2xs: 0px 1px 2px 0px hsl(220 80% 5% / 0.40);
-  --shadow-xs: 0px 1px 3px 0px hsl(220 80% 5% / 0.50);
-  --shadow-sm: 0px 2px 4px 0px hsl(220 80% 5% / 0.45), 0px 1px 2px -1px hsl(220 80% 5% / 0.35);
-  --shadow: 0px 4px 6px -1px hsl(220 80% 5% / 0.50), 0px 2px 4px -2px hsl(220 80% 5% / 0.40);
-  --shadow-md: 0px 6px 8px -2px hsl(220 80% 5% / 0.55), 0px 4px 6px -3px hsl(220 80% 5% / 0.45);
-  --shadow-lg: 0px 10px 15px -3px hsl(220 80% 5% / 0.60), 0px 6px 10px -4px hsl(220 80% 5% / 0.50);
-  --shadow-xl: 0px 20px 25px -5px hsl(220 80% 5% / 0.65), 0px 10px 15px -6px hsl(220 80% 5% / 0.55);
-  --shadow-2xl: 0px 25px 50px -12px hsl(220 80% 5% / 0.70);
+  --shadow-2xs: 0px 1px 2px 0px hsl(222 60% 5% / 0.40);
+  --shadow-xs: 0px 1px 3px 0px hsl(222 60% 5% / 0.50);
+  --shadow-sm: 0px 2px 4px 0px hsl(222 60% 5% / 0.45), 0px 1px 2px -1px hsl(222 60% 5% / 0.35);
+  --shadow: 0px 4px 6px -1px hsl(222 60% 5% / 0.50), 0px 2px 4px -2px hsl(222 60% 5% / 0.40);
+  --shadow-md: 0px 6px 8px -2px hsl(222 60% 5% / 0.55), 0px 4px 6px -3px hsl(222 60% 5% / 0.45);
+  --shadow-lg: 0px 10px 15px -3px hsl(222 60% 5% / 0.60), 0px 6px 10px -4px hsl(222 60% 5% / 0.50);
+  --shadow-xl: 0px 20px 25px -5px hsl(222 60% 5% / 0.65), 0px 10px 15px -6px hsl(222 60% 5% / 0.55);
+  --shadow-2xl: 0px 25px 50px -12px hsl(222 60% 5% / 0.70);
 
   /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
