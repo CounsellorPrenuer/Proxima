@@ -234,6 +234,14 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  a, button {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+
+  section {
+    @apply scroll-mt-24;
+  }
 }
 
 @layer utilities {
