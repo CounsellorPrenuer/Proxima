@@ -1,0 +1,14 @@
+{
+  "name": "proxima-sanity-studio",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "sanity dev",
+    "deploy": "sanity deploy",
+    "seed": "node seed.mjs"
+  },
+  "dependencies": {
+    "@sanity/client": "^7.12.1",
+    "sanity": "^3.94.0"
+  }
+}

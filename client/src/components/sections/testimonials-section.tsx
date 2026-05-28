@@ -1,16 +1,18 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
-import type { Testimonial } from "@shared/schema";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { fetchTestimonials, sanityImageUrl } from "@/lib/sanity";
+import type { TestimonialItem } from "@/types/cms";
 
 export default function TestimonialsSection() {
-  const { data: testimonials, isLoading } = useQuery<Testimonial[]>({
-    queryKey: ["/api/testimonials"],
+  const { data: testimonials = [], isLoading } = useQuery<TestimonialItem[]>({
+    queryKey: ["sanity-testimonials"],
+    queryFn: fetchTestimonials,
   });
 
-  const displayTestimonials = testimonials?.filter(t => t.isPublished) || [];
+  const displayTestimonials = testimonials;
 
   if (isLoading) {
     return (
@@ -50,7 +52,7 @@ export default function TestimonialsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayTestimonials.map((testimonial, index) => (
             <motion.div
-              key={testimonial.id}
+              key={testimonial._id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -74,6 +76,7 @@ export default function TestimonialsSection() {
 
                   <div className="flex items-center gap-3 pt-4 border-t">
                     <Avatar>
+                      {testimonial.image && <AvatarImage src={sanityImageUrl(testimonial.image)} alt={testimonial.name} />}
                       <AvatarFallback className="bg-primary text-primary-foreground">
                         {testimonial.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>

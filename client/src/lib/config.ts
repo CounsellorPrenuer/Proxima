@@ -1,0 +1,10 @@
+export const PROJECT_ID = "proxima";
+export const SANITY_PROJECT_ID = "qbf8rv9m";
+export const SANITY_DATASET = "production";
+export const SANITY_API_VERSION = "2025-01-01";
+export const SANITY_STUDIO_HOST = "proxima";
+export const GITHUB_PAGES_REPO_NAME = "Proxima";
+export const GITHUB_PAGES_ORIGIN = "https://github.com/CounsellorPrenuer/Proxima.git";
+export const UNIVERSAL_WORKER_URL = "https://multi-tenant-platform.gauravgoodreads.workers.dev";
+export const CONTACT_EMAIL = "proximagmgf@gmail.com";
+export const CONTACT_PHONE = "+91 9650660584";

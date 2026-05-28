@@ -1,123 +1,116 @@
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Brain, Globe, GraduationCap, Target, Users, Video } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import BookingModal from "@/components/booking-modal";
+import { fetchCustomPlans, fetchStandardPlans } from "@/lib/sanity";
+import { formatINR } from "@/lib/currency";
+import type { CustomPlan, StandardPlan } from "@/types/cms";
+
+const TAB_ORDER = [
+  { id: "8-10", label: "8-10 Students" },
+  { id: "10-12", label: "10-12 Students" },
+  { id: "college", label: "College Students" },
+  { id: "working", label: "Working Professionals" },
+] as const;
 
 export default function MentoriaSection() {
-  const scrollToContact = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [activeTab, setActiveTab] = useState<(typeof TAB_ORDER)[number]["id"]>("8-10");
+  const [selectedPlan, setSelectedPlan] = useState<{ planId: string; title: string } | null>(null);
 
-  const steps = [
-    {
-      icon: Brain,
-      title: "Psychometric Assessment",
-      description: "AI-driven test measuring interests, personality traits, and abilities using John Holland's RIASEC model. Recommends top 10 career paths tailored for Indian students.",
-      color: "text-blue-600",
-    },
-    {
-      icon: Users,
-      title: "One-on-One Counselling",
-      description: "Certified career counsellors guide you through assessment results via Zoom. Shortlist top 3 ideal careers with parent involvement in final session.",
-      color: "text-purple-600",
-    },
-    {
-      icon: Globe,
-      title: "Career Library (12,000+ Options)",
-      description: "Access comprehensive database with detailed information on courses, salaries, career paths, and admission guidance for India and abroad.",
-      color: "text-blue-500",
-    },
-    {
-      icon: Video,
-      title: "Industry Expert Webinars",
-      description: "Live sessions with professionals providing real-world insights and Q&A opportunities across various fields and specializations.",
-      color: "text-purple-500",
-    },
-  ];
+  const { data: standardPlans = [] } = useQuery<StandardPlan[]>({
+    queryKey: ["sanity-standard-plans"],
+    queryFn: fetchStandardPlans,
+  });
+
+  const { data: customPlans = [] } = useQuery<CustomPlan[]>({
+    queryKey: ["sanity-custom-plans"],
+    queryFn: fetchCustomPlans,
+  });
+
+  const groupedPlans = useMemo(() => {
+    return standardPlans.filter((plan) => plan.subgroup === activeTab);
+  }, [activeTab, standardPlans]);
 
   return (
-    <section className="py-24 bg-gradient-to-br from-blue-50 via-white to-purple-50" id="mentoria">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <Badge variant="secondary" className="mb-4 px-4 py-2" data-testid="badge-mentoria">
-            Powered by India's #1 Career Guidance Platform
-          </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4" data-testid="text-mentoria-title">
-            Career Discovery with Mentoria
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            PROXIMA partners with Mentoria to provide science-backed career assessments and personalized guidance. 
-            Access 12,000+ career options and expert counselling to make informed decisions about your future.
-          </p>
-        </motion.div>
+    <>
+      <section className="py-20 bg-gradient-to-b from-white to-blue-50" id="mentoria">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-4xl md:text-5xl font-bold">Mentoria Packages</h2>
+            <p className="text-muted-foreground mt-3 max-w-3xl mx-auto">
+              Pick the package that fits your stage and goals. Checkout supports coupons and secure Razorpay payment.
+            </p>
+          </div>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Card className="h-full hover-elevate transition-all duration-300" data-testid={`card-mentoria-step-${index}`}>
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="inline-flex p-3 rounded-xl bg-secondary">
-                        <step.icon className={`h-6 w-6 ${step.color}`} />
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Badge variant="outline" className="text-xs">Step {index + 1}</Badge>
-                      </div>
-                      <CardTitle className="text-xl">{step.title}</CardTitle>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pl-20">
-                  <p className="text-muted-foreground">{step.description}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {TAB_ORDER.map((tab) => (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? "default" : "outline"}
+                className="rounded-full"
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </Button>
+            ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {groupedPlans.map((plan) => (
+              <motion.div key={plan._id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <Card className="h-full border-blue-100 shadow-sm hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{plan.title}</CardTitle>
+                    <div className="text-3xl font-bold text-primary">{formatINR(plan.price)}</div>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <ul className="space-y-2">
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="text-sm text-muted-foreground">- {feature}</li>
+                      ))}
+                    </ul>
+                    <Button className="w-full" onClick={() => setSelectedPlan({ planId: plan.planId, title: plan.title })}>
+                      Buy Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-16">
+            <h3 className="text-3xl font-bold text-center">Want To Customise Your Mentorship Plan?</h3>
+            <p className="text-muted-foreground text-center mt-2 max-w-4xl mx-auto">
+              If you want to subscribe to specific services from Mentoria that resolve your career challenges, you can choose one or more of the following:
+            </p>
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              {customPlans.map((plan) => (
+                <Card key={plan._id} className="h-full">
+                  <CardHeader>
+                    <CardTitle>{plan.title}</CardTitle>
+                    <div className="text-xl font-semibold text-primary">{formatINR(plan.price)}</div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground">{plan.description}</p>
+                    <Button variant="secondary" className="w-full" onClick={() => setSelectedPlan({ planId: plan.planId, title: plan.title })}>
+                      Buy Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
+      </section>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-gradient-to-r from-primary to-accent p-8 md:p-12 rounded-2xl text-white text-center"
-        >
-          <GraduationCap className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">
-            Ideal for Students (Class 9-12, College), Working Professionals, and Career Transitions
-          </h3>
-          <p className="text-lg mb-8 opacity-90 max-w-3xl mx-auto">
-            Whether you're choosing your stream, planning college admissions, or exploring study abroad options through 
-            Mentoria Overseas, PROXIMA's certified counsellors provide expert guidance every step of the way.
-          </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            className="rounded-full px-8 py-6 text-lg"
-            onClick={scrollToContact}
-            data-testid="button-start-career-discovery"
-          >
-            <Target className="mr-2 h-5 w-5" />
-            Start Your Career Discovery
-          </Button>
-        </motion.div>
-      </div>
-    </section>
+      <BookingModal
+        isOpen={Boolean(selectedPlan)}
+        onClose={() => setSelectedPlan(null)}
+        planId={selectedPlan?.planId ?? ""}
+        planTitle={selectedPlan?.title ?? ""}
+      />
+    </>
   );
 }

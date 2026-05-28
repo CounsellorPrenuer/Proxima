@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { Mail, Phone, Globe, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ConsultationForm from "@/components/consultation-form";
+import { CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/config";
 
 export default function ContactSection() {
+  const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Inquiry from Proxima website")}&body=${encodeURIComponent("Hello Team Proxima,%0D%0A%0D%0AI would like to know more about mentorship plans.")}`;
   return (
     <section className="py-24 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5" id="contact">
       <div className="max-w-7xl mx-auto px-6">
@@ -48,7 +49,7 @@ export default function ContactSection() {
               
               <div className="space-y-4">
                 <a 
-                  href="tel:+919650660584" 
+                  href={`tel:${CONTACT_PHONE.replace(/\s+/g, "")}`} 
                   className="flex items-center gap-4 p-4 rounded-xl hover-elevate transition-all group"
                   data-testid="link-phone"
                 >
@@ -59,12 +60,12 @@ export default function ContactSection() {
                     <div className="font-medium text-foreground group-hover:text-primary transition-colors">
                       Call Us
                     </div>
-                    <div className="text-muted-foreground">+91 9650660584</div>
+                    <div className="text-muted-foreground">{CONTACT_PHONE}</div>
                   </div>
                 </a>
 
                 <a 
-                  href="mailto:proximagmgf@gmail.com" 
+                  href={mailHref}
                   className="flex items-center gap-4 p-4 rounded-xl hover-elevate transition-all group"
                   data-testid="link-email"
                 >
@@ -75,7 +76,7 @@ export default function ContactSection() {
                     <div className="font-medium text-foreground group-hover:text-accent transition-colors">
                       Email Us
                     </div>
-                    <div className="text-muted-foreground">proximagmgf@gmail.com</div>
+                    <div className="text-muted-foreground">{CONTACT_EMAIL}</div>
                   </div>
                 </a>
 

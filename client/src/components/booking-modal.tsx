@@ -6,16 +6,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { insertBookingSchema, SERVICE_TYPES, SERVICE_PRICING } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { createOrder, previewCoupon, verifyPayment } from "@/lib/workerApi";
+import { formatINR } from "@/lib/currency";
 
-const bookingFormSchema = insertBookingSchema.extend({
+const bookingFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  couponCode: z.string().optional(),
 });
 
 type BookingFormData = z.infer<typeof bookingFormSchema>;
@@ -23,7 +24,14 @@ type BookingFormData = z.infer<typeof bookingFormSchema>;
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  serviceType: string | null;
+  planId: string;
+  planTitle: string;
+}
+
+interface CreateOrderResponse {
+  amount: number;
+  razorpay_order_id?: string;
+  orderId?: string;
 }
 
 declare global {
@@ -32,12 +40,10 @@ declare global {
   }
 }
 
-export default function BookingModal({ isOpen, onClose, serviceType }: BookingModalProps) {
+export default function BookingModal({ isOpen, onClose, planId, planTitle }: BookingModalProps) {
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const serviceName = serviceType ? SERVICE_TYPES[serviceType as keyof typeof SERVICE_TYPES] : "";
-  const amount = serviceType ? SERVICE_PRICING[serviceType as keyof typeof SERVICE_PRICING] : 0;
+  const [estimatedAmount, setEstimatedAmount] = useState<number | null>(null);
 
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema),
@@ -45,44 +51,52 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
       name: "",
       email: "",
       phone: "",
-      serviceType: serviceType || "",
-      amount: amount,
+      couponCode: "",
     },
   });
 
   const createOrderMutation = useMutation({
     mutationFn: async (data: BookingFormData) => {
-      const res = await apiRequest("POST", "/api/payments/create-order", data);
-      return await res.json();
+      return createOrder({
+        plan_id: planId,
+        coupon_code: data.couponCode,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+      });
     },
   });
 
   const verifyPaymentMutation = useMutation({
     mutationFn: async (paymentData: any) => {
-      const res = await apiRequest("POST", "/api/payments/verify", paymentData);
-      return await res.json();
+      return verifyPayment(paymentData);
     },
+  });
+
+  const previewCouponMutation = useMutation({
+    mutationFn: async (couponCode: string) => previewCoupon({ plan_id: planId, coupon_code: couponCode }),
   });
 
   const handlePayment = async (data: BookingFormData) => {
     try {
       setIsProcessing(true);
 
-      const orderData = await createOrderMutation.mutateAsync(data);
+      const orderData = (await createOrderMutation.mutateAsync(data)) as CreateOrderResponse;
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
         amount: orderData.amount, // amount in paise from backend
         currency: "INR",
         name: "PROXIMA",
-        description: serviceName,
-        order_id: orderData.orderId,
+        description: planTitle,
+        order_id: orderData.razorpay_order_id || orderData.orderId,
         handler: async function (response: any) {
           try {
             await verifyPaymentMutation.mutateAsync({
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              plan_id: planId,
             });
 
             toast({
@@ -96,7 +110,7 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
             toast({
               variant: "destructive",
               title: "Payment Verification Failed",
-              description: error.message || "Please contact us for assistance.",
+              description: error.message || "Please contact us for assistance",
             });
           }
         },
@@ -121,7 +135,7 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
       toast({
         variant: "destructive",
         title: "Booking Failed",
-        description: error.message || "Failed to create booking. Please try again.",
+        description: error.message || "Failed to create booking. Please try again",
       });
     } finally {
       setIsProcessing(false);
@@ -134,7 +148,7 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
         <DialogHeader>
           <DialogTitle>Book Service</DialogTitle>
           <DialogDescription>
-            Complete your booking for {serviceName}
+            Complete your booking for {planTitle}
           </DialogDescription>
         </DialogHeader>
 
@@ -181,12 +195,38 @@ export default function BookingModal({ isOpen, onClose, serviceType }: BookingMo
 
           <div className="bg-secondary p-4 rounded-lg">
             <div className="flex justify-between items-center mb-2">
-              <span className="font-medium">Service</span>
-              <span className="text-sm text-muted-foreground">{serviceName}</span>
+              <span className="font-medium">Plan</span>
+              <span className="text-sm text-muted-foreground">{planTitle}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-medium">Amount</span>
-              <span className="text-2xl font-bold text-primary">₹{amount.toLocaleString()}</span>
+              <span className="font-medium">Estimated Amount</span>
+              <span className="text-2xl font-bold text-primary">{estimatedAmount ? formatINR(estimatedAmount) : "--"}</span>
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="couponCode">Coupon code</Label>
+            <div className="flex gap-2 mt-1">
+              <Input id="couponCode" {...form.register("couponCode")} placeholder="e.g. DEEPA10" />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={async () => {
+                  const couponCode = form.getValues("couponCode");
+                  if (!couponCode) return;
+                  try {
+                    const result: any = await previewCouponMutation.mutateAsync(couponCode);
+                    const amount = result?.final_amount ?? result?.amount ?? null;
+                    setEstimatedAmount(typeof amount === "number" ? amount : null);
+                    toast({ title: "Coupon applied", description: result?.message || "Discount preview loaded." });
+                  } catch (error: any) {
+                    setEstimatedAmount(null);
+                    toast({ variant: "destructive", title: "Coupon invalid", description: error.message || "Could not apply coupon" });
+                  }
+                }}
+              >
+                Apply
+              </Button>
             </div>
           </div>
 

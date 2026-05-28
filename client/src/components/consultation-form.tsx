@@ -6,24 +6,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { insertConsultationSchema, SERVICE_TYPES } from "@shared/schema";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { submitLead } from "@/lib/workerApi";
 
-const consultationFormSchema = insertConsultationSchema.extend({
+const SERVICE_TYPES = {
+  MENTORIA_STANDARD: "Mentoria Standard Package",
+  MENTORIA_CUSTOM: "Mentoria Custom Package",
+  COUNSELLING: "Counselling",
+  ADMISSION: "Admission Guidance",
+};
+
+const consultationFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   serviceType: z.string().min(1, "Please select a service"),
+  message: z.string().optional(),
+  preferredDate: z.string().optional(),
 });
 
 type ConsultationFormData = z.infer<typeof consultationFormSchema>;
 
 export default function ConsultationForm() {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const form = useForm<ConsultationFormData>({
     resolver: zodResolver(consultationFormSchema),
@@ -39,10 +46,14 @@ export default function ConsultationForm() {
 
   const submitConsultation = useMutation({
     mutationFn: async (data: ConsultationFormData) => {
-      return await apiRequest("POST", "/api/consultations", data);
+      return submitLead({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        message: `${data.serviceType}${data.preferredDate ? ` | Preferred date: ${data.preferredDate}` : ""}${data.message ? ` | ${data.message}` : ""}`,
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/consultations"] });
       toast({
         title: "Consultation Request Submitted!",
         description: "We'll get back to you within 24 hours to schedule your free consultation.",
