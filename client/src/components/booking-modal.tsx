@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { createOrder, previewCoupon, verifyPayment } from "@/lib/workerApi";
 import { formatINR } from "@/lib/currency";
+import { SUGGESTED_COUPON_CODE } from "@/lib/config";
 
 const bookingFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -26,6 +27,7 @@ interface BookingModalProps {
   onClose: () => void;
   planId: string;
   planTitle: string;
+  planPrice: number;
 }
 
 interface CreateOrderResponse {
@@ -40,10 +42,11 @@ declare global {
   }
 }
 
-export default function BookingModal({ isOpen, onClose, planId, planTitle }: BookingModalProps) {
+export default function BookingModal({ isOpen, onClose, planId, planTitle, planPrice }: BookingModalProps) {
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [estimatedAmount, setEstimatedAmount] = useState<number | null>(null);
+  const [displayAmount, setDisplayAmount] = useState(planPrice);
+  const [couponApplied, setCouponApplied] = useState(false);
 
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema),
@@ -54,6 +57,14 @@ export default function BookingModal({ isOpen, onClose, planId, planTitle }: Boo
       couponCode: "",
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      setDisplayAmount(planPrice);
+      setCouponApplied(false);
+      form.reset({ name: "", email: "", phone: "", couponCode: "" });
+    }
+  }, [isOpen, planId, planPrice, form]);
 
   const createOrderMutation = useMutation({
     mutationFn: async (data: BookingFormData) => {
@@ -146,9 +157,9 @@ export default function BookingModal({ isOpen, onClose, planId, planTitle }: Boo
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md" data-testid="modal-booking">
         <DialogHeader>
-          <DialogTitle>Book Service</DialogTitle>
+          <DialogTitle>Complete Your Purchase</DialogTitle>
           <DialogDescription>
-            Complete your booking for {planTitle}
+            {planTitle} — {formatINR(planPrice)}
           </DialogDescription>
         </DialogHeader>
 
@@ -199,28 +210,50 @@ export default function BookingModal({ isOpen, onClose, planId, planTitle }: Boo
               <span className="text-sm text-muted-foreground">{planTitle}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-medium">Estimated Amount</span>
-              <span className="text-2xl font-bold text-primary">{estimatedAmount ? formatINR(estimatedAmount) : "--"}</span>
+              <span className="font-medium">{couponApplied ? "Total after discount" : "Package Price"}</span>
+              <div className="text-right">
+                {couponApplied && displayAmount < planPrice && (
+                  <span className="text-sm text-muted-foreground line-through mr-2">{formatINR(planPrice)}</span>
+                )}
+                <span className="text-2xl font-bold text-primary">{formatINR(displayAmount)}</span>
+              </div>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="couponCode">Coupon code</Label>
+            <Label htmlFor="couponCode">Have a coupon?</Label>
             <div className="flex gap-2 mt-1">
-              <Input id="couponCode" {...form.register("couponCode")} placeholder="e.g. DEEPA10" />
+              <Input
+                id="couponCode"
+                {...form.register("couponCode")}
+                placeholder={`e.g. ${SUGGESTED_COUPON_CODE}`}
+              />
               <Button
                 type="button"
                 variant="outline"
+                disabled={previewCouponMutation.isPending}
                 onClick={async () => {
-                  const couponCode = form.getValues("couponCode");
-                  if (!couponCode) return;
+                  const couponCode = form.getValues("couponCode")?.trim();
+                  if (!couponCode) {
+                    toast({ variant: "destructive", title: "Enter a coupon code", description: `Try ${SUGGESTED_COUPON_CODE} or PROXIMA500.` });
+                    return;
+                  }
                   try {
                     const result: any = await previewCouponMutation.mutateAsync(couponCode);
-                    const amount = result?.final_amount ?? result?.amount ?? null;
-                    setEstimatedAmount(typeof amount === "number" ? amount : null);
-                    toast({ title: "Coupon applied", description: result?.message || "Discount preview loaded." });
+                    const amount = result?.final_amount ?? result?.amount_in_rupees ?? result?.amount;
+                    if (typeof amount === "number") {
+                      const normalized = amount > planPrice * 10 ? amount / 100 : amount;
+                      setDisplayAmount(normalized);
+                      setCouponApplied(true);
+                      toast({ title: "Coupon applied", description: result?.message || `New total: ${formatINR(normalized)}` });
+                    } else {
+                      setDisplayAmount(planPrice);
+                      setCouponApplied(false);
+                      toast({ title: "Coupon applied", description: result?.message || "Discount preview loaded." });
+                    }
                   } catch (error: any) {
-                    setEstimatedAmount(null);
+                    setDisplayAmount(planPrice);
+                    setCouponApplied(false);
                     toast({ variant: "destructive", title: "Coupon invalid", description: error.message || "Could not apply coupon" });
                   }
                 }}
@@ -228,6 +261,7 @@ export default function BookingModal({ isOpen, onClose, planId, planTitle }: Boo
                 Apply
               </Button>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">Try {SUGGESTED_COUPON_CODE} (10% off) or PROXIMA500 (Rs. 500 off).</p>
           </div>
 
           <div className="flex gap-3 pt-4">

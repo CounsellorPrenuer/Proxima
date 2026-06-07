@@ -38,7 +38,11 @@ const TAB_ORDER = [
 
 export default function MentoriaSection() {
   const [activeTab, setActiveTab] = useState<(typeof TAB_ORDER)[number]["id"]>("8-10");
-  const [selectedPlan, setSelectedPlan] = useState<{ planId: string; title: string } | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{ planId: string; title: string; price: number } | null>(null);
+
+  const openCheckout = (plan: { planId: string; title: string; price: number }) => {
+    setSelectedPlan(plan);
+  };
 
   const { data: standardPlans = [] } = useQuery<StandardPlan[]>({
     queryKey: ["sanity-standard-plans"],
@@ -90,12 +94,12 @@ export default function MentoriaSection() {
                     <div className="text-3xl font-bold text-primary">{formatINR(plan.price)}</div>
                   </CardHeader>
                   <CardContent className="space-y-5">
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 list-disc pl-5">
                       {plan.features.map((feature) => (
-                        <li key={feature} className="text-sm text-muted-foreground">- {feature}</li>
+                        <li key={feature} className="text-sm text-muted-foreground">{feature}</li>
                       ))}
                     </ul>
-                    <Button className="w-full" onClick={() => setSelectedPlan({ planId: plan.planId, title: plan.title })}>
+                    <Button className="w-full bg-primary hover:bg-primary/90" onClick={() => openCheckout(plan)}>
                       Buy Now
                     </Button>
                   </CardContent>
@@ -118,7 +122,7 @@ export default function MentoriaSection() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">{plan.description}</p>
-                    <Button variant="secondary" className="w-full" onClick={() => setSelectedPlan({ planId: plan.planId, title: plan.title })}>
+                    <Button className="w-full bg-primary hover:bg-primary/90" onClick={() => openCheckout(plan)}>
                       Buy Now
                     </Button>
                   </CardContent>
@@ -134,6 +138,7 @@ export default function MentoriaSection() {
         onClose={() => setSelectedPlan(null)}
         planId={selectedPlan?.planId ?? ""}
         planTitle={selectedPlan?.title ?? ""}
+        planPrice={selectedPlan?.price ?? 0}
       />
     </>
   );

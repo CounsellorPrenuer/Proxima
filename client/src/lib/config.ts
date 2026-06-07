@@ -8,3 +8,4 @@ export const GITHUB_PAGES_ORIGIN = "https://github.com/CounsellorPrenuer/Proxima
 export const UNIVERSAL_WORKER_URL = "https://multi-tenant-platform.gauravgoodreads.workers.dev";
 export const CONTACT_EMAIL = "proximagmgf@gmail.com";
 export const CONTACT_PHONE = "+91 9650660584";
+export const SUGGESTED_COUPON_CODE = "PROXIMA10";
