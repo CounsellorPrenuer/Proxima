@@ -32,7 +32,9 @@ interface BookingModalProps {
 
 interface CreateOrderResponse {
   amount: number;
+  key_id?: string;
   razorpay_order_id?: string;
+  order_id?: string;
   orderId?: string;
 }
 
@@ -95,12 +97,12 @@ export default function BookingModal({ isOpen, onClose, planId, planTitle, planP
       const orderData = (await createOrderMutation.mutateAsync(data)) as CreateOrderResponse;
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "",
+        key: orderData.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || "",
         amount: orderData.amount, // amount in paise from backend
         currency: "INR",
         name: "PROXIMA",
         description: planTitle,
-        order_id: orderData.razorpay_order_id || orderData.orderId,
+        order_id: orderData.razorpay_order_id || orderData.order_id || orderData.orderId,
         handler: async function (response: any) {
           try {
             await verifyPaymentMutation.mutateAsync({
